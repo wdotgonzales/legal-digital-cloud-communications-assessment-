@@ -7,3 +7,6 @@ app = FastAPI()
 def read_root():
     return {"status": "carrier service running"}
 
+@app.get("/health")
+def health():
+    return {"status": "ok"}
