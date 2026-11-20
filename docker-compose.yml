@@ -33,9 +33,6 @@ services:
       timeout: 3s
       retries: 10
       start_period: 5s
-    depends_on:
-      db:
-        condition: service_healthy
     restart: unless-stopped
 
   gateway:
@@ -48,7 +45,7 @@ services:
     env_file:
       - .env
     environment:
-      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-sms_gateway}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-sms_gateway}
       REDIS_URL: redis://redis:6379/0
       CARRIER_URL: http://carrier:8000
     depends_on:
@@ -68,13 +65,7 @@ services:
     env_file:
       - .env
     environment:
-      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-sms_gateway}
-      REDIS_URL: redis://redis:6379/0
-    depends_on:
-      db:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
+      GATEWAY_URL: http://gateway:8000
     restart: unless-stopped
 
 volumes:
